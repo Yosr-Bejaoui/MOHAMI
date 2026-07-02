@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOHAMI | AI Legal Assistant</title>
+    <meta name="description" content="Assistant Juridique IA pour le Droit Tunisien">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Claude-style typography: Crimson Pro for serif headings, Inter for clean body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <h1>MOHAMI</h1>
+            </div>
+        </header>
+
+        <!-- Chat Area -->
+        <main class="chat-container" id="chatContainer">
+            <!-- Welcome Message (AI) -->
+            <div class="message ai-message">
+                <div class="message-avatar">⚖️</div>
+                <div class="message-content-wrapper">
+                    <div class="text-content">
+                        <p>Bonjour. Je suis MOHAMI, votre assistant juridique pour le droit tunisien.</p>
+                        <p>Posez-moi vos questions. J'analyserai le domaine et rechercherai les articles pertinents pour vous répondre avec précision.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="input-container">
+            <form id="askForm" class="input-panel">
+                <div class="input-wrapper">
+                    <textarea id="questionInput" placeholder="Quelle est la peine pour un vol qualifié ?" rows="1" required autofocus></textarea>
+                    <button type="submit" id="sendBtn" class="send-btn" aria-label="Envoyer" disabled>
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </div>
+            </form>
+            <p class="disclaimer">MOHAMI peut faire des erreurs. Consultez un avocat pour des conseils officiels.</p>
+        </footer>
+    </div>
+
+    <!-- Template for messages -->
+    <template id="userMessageTemplate">
+        <div class="message user-message">
+            <div class="message-bubble"></div>
+        </div>
+    </template>
+
+    <template id="aiMessageTemplate">
+        <div class="message ai-message">
+            <div class="message-avatar">⚖️</div>
+            <div class="message-content-wrapper">
+                <div class="domain-badge hidden">
+                    <span class="domain-text"></span>
+                </div>
+                <div class="text-content"></div>
+                <div class="sources-container hidden">
+                    <h4>Sources</h4>
+                    <div class="sources-grid"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="sourceCardTemplate">
+        <div class="source-card">
+            <div class="source-header">
+                <span class="source-law"></span>
+                <span class="source-article"></span>
+            </div>
+            <p class="source-excerpt"></p>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>

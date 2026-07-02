@@ -1,0 +1,43 @@
+{
+  "domains": {
+    "penal": {
+      "corpus_label": "le Droit Pénal Tunisien",
+      "laws": [
+        "code_penal",
+        "code_procedure_penale"
+      ],
+      "system_prompt": "You are a Tunisian legal assistant. Answer ONLY based on the provided legal articles. Use simple clear French, no legal jargon. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {
+        "vol": ["vol", "vole", "soustraction", "soustrait", "soustraire", "braquage", "cambriolage", "piquer", "voleur", "arrachage", "pickpocket", "extorsion"],
+        "meurtre": ["meurtre", "homicide", "tue", "tuer", "assassinat", "mort", "tueur"],
+        "agression": ["agression", "violence", "violences", "voies", "fait", "frapper", "bagarre", "coup", "tabasser", "battre", "blesse", "blessure"],
+        "harcelement": ["harcelement", "harceler", "gene", "embeter"],
+        "temoignage": ["temoignage", "temoin", "serment"],
+        "peine": ["peine", "peines", "emprisonnement", "amende", "prison", "punition", "sanction"],
+        "escroquerie": ["escroquerie", "arnaque", "fraude", "escroc", "tromperie"],
+        "drogue": ["drogue", "stupefiant", "cannabis", "zatla", "consommer", "fumer", "chira"]
+      },
+      "boosts": [
+        {
+          "name": "arrest_rights",
+          "triggers": ["arrete", "arrestation", "garde a vue", "garde", "droits", "detenu", "detention"],
+          "law": "code_procedure_penale",
+          "articles": ["13", "13 bis", "13 ter"]
+        },
+        {
+          "name": "theft",
+          "triggers": ["vol", "vole", "soustraction", "peine", "vol simple"],
+          "law": "code_penal",
+          "articles": ["264"]
+        }
+      ]
+    },
+    "default": {
+      "corpus_label": "la législation tunisienne",
+      "laws": [],
+      "system_prompt": "You are a Tunisian legal assistant. Answer ONLY based on the provided legal articles. Use simple clear French, no legal jargon. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {},
+      "boosts": []
+    }
+  }
+}
