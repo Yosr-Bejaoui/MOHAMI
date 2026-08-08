@@ -4,3 +4,7 @@ __pycache__/
 *.npz
 *.env
 .env
+node_modules/
+data/generated/
+legacy/
+data/sources/*/*.pdf

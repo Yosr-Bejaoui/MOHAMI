@@ -4,7 +4,14 @@ import json
 import urllib.error
 import urllib.request
 
-from rag_utils import GEMINI_API_KEY, GEMINI_BASE_URL, GEMINI_MODEL, is_gemini_available
+import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from backend.rag_utils import GEMINI_API_KEY, GEMINI_BASE_URL, GEMINI_MODEL, is_gemini_available
 
 
 def main() -> None:

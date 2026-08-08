@@ -6,11 +6,11 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 # Ensure we can import answer.py from the same directory
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
-from answer import answer_question
+from .answer import answer_question
 
 app = FastAPI(title="MOHAMI API")
 

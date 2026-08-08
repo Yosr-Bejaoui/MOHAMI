@@ -7,7 +7,7 @@ import sys
 
 import google.generativeai as genai
 
-from rag_utils import retrieve, get_system_prompt, _load_domain_config, is_gemini_available
+from .rag_utils import retrieve, get_system_prompt, _load_domain_config, is_gemini_available
 
 GEMINI_MODEL = os.environ.get("MOHAMI_GEMINI_MODEL", "gemini-2.5-flash")
 
@@ -85,7 +85,7 @@ def answer_question(question: str) -> tuple[str, list[dict], str]:
     domain = classify_domain(question)
     print(f"\n[Router] Detected Domain: {domain}")
 
-    hits = retrieve(question, top_k=3, domain=domain)
+    hits = retrieve(question, top_k=5, domain=domain)
     if not hits:
         return (
             "Je n'ai trouvé aucun article pertinent dans le corpus indexé.\n"

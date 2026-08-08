@@ -1,0 +1,201 @@
+{
+  "domains": {
+    "penal": {
+      "corpus_label": "le Droit Pénal Tunisien",
+      "laws": [
+        "code_penal",
+        "code_procedure_penale"
+      ],
+      "system_prompt": "You are a Tunisian legal assistant. Answer ONLY based on the provided legal articles. Use simple clear French, no legal jargon. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {
+        "vol": ["vol", "vole", "soustraction", "soustrait", "soustraire", "braquage", "cambriolage", "piquer", "voleur", "arrachage", "pickpocket", "extorsion"],
+        "meurtre": ["meurtre", "homicide", "tue", "tuer", "assassinat", "mort", "tueur"],
+        "agression": ["agression", "violence", "violences", "voies", "fait", "frapper", "bagarre", "coup", "tabasser", "battre", "blesse", "blessure"],
+        "harcelement": ["harcelement", "harceler", "gene", "embeter"],
+        "temoignage": ["temoignage", "temoin", "serment"],
+        "peine": ["peine", "peines", "emprisonnement", "amende", "prison", "punition", "sanction"],
+        "escroquerie": ["escroquerie", "arnaque", "fraude", "escroc", "tromperie"],
+        "drogue": ["drogue", "stupefiant", "cannabis", "zatla", "consommer", "fumer", "chira"],
+        "crime": ["crime", "criminel", "delit", "infraction", "contravention"],
+        "arrestation": ["arrestation", "arrete", "detention", "detenu", "garde a vue", "mandat"]
+      },
+      "boosts": [
+        {
+          "name": "arrest_rights",
+          "triggers": ["arrete", "arrestation", "garde a vue", "garde", "droits", "detenu", "detention"],
+          "law": "code_procedure_penale",
+          "articles": ["13", "13 bis", "13 ter"]
+        },
+        {
+          "name": "theft",
+          "triggers": ["vol", "vole", "soustraction", "peine", "vol simple"],
+          "law": "code_penal",
+          "articles": ["264"]
+        }
+      ]
+    },
+    "civil": {
+      "corpus_label": "le Droit Civil Tunisien",
+      "laws": [
+        "code_coc",
+        "code_procedure_civile_commerciale"
+      ],
+      "system_prompt": "You are a Tunisian civil law expert. Answer ONLY based on the provided Code des Obligations et des Contrats and Code de Procédure Civile et Commerciale. Use simple clear French. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {
+        "contrat": ["contrat", "accord", "convention", "pacte", "engagement", "obligations"],
+        "validite": ["validite", "valide", "valable", "conditions", "elements", "necessaires", "formation"],
+        "consentement": ["consentement", "acceptation", "accord", "volonte"],
+        "capacite": ["capacite", "capable", "incapable", "mineur", "majeur", "interdit"],
+        "vente": ["vente", "achat", "vendeur", "acheteur", "prix", "cession"],
+        "dommage": ["dommage", "prejudice", "indemnisation", "reparation", "faute", "responsabilite"],
+        "louage": ["louage", "location", "loyer", "locataire", "bailleur", "bail"],
+        "mandat": ["mandat", "mandataire", "mandant", "procuration", "representant"],
+        "societe": ["societe", "associe", "associes", "sarl", "parts", "actions"],
+        "garantie": ["garantie", "caution", "cautionnement", "hypotheque", "gage", "nantissement"],
+        "prescription": ["prescription", "delai", "forclusion"],
+        "appel": ["appel", "pourvoi", "cassation", "recours", "jugement", "tribunal"],
+        "action": ["action en justice", "assignation", "plainte", "demande", "procedure"]
+      },
+      "boosts": [
+        {
+          "name": "contract_validity",
+          "triggers": ["contrat", "validite", "conditions", "valide", "formation", "elements"],
+          "law": "code_coc",
+          "articles": ["2", "3", "4", "5", "6", "23", "24"]
+        },
+        {
+          "name": "consent",
+          "triggers": ["consentement", "erreur", "dol", "violence", "vice"],
+          "law": "code_coc",
+          "articles": ["43", "46", "50", "56"]
+        },
+        {
+          "name": "liability",
+          "triggers": ["responsabilite", "faute", "dommage", "prejudice", "reparation", "indemnite"],
+          "law": "code_coc",
+          "articles": ["82", "83", "96", "107"]
+        },
+        {
+          "name": "sale_contract",
+          "triggers": ["vente", "achat", "vendeur", "acheteur"],
+          "law": "code_coc",
+          "articles": ["577", "580", "581"]
+        }
+      ]
+    },
+    "commercial": {
+      "corpus_label": "le Droit Commercial Tunisien",
+      "laws": [
+        "code_commercial",
+        "code_procedure_civile_commerciale"
+      ],
+      "system_prompt": "You are a Tunisian commercial law expert. Answer ONLY based on the provided Code de Commerce and Code de Procédure Civile et Commerciale. Use simple clear French. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {
+        "commercant": ["commercant", "commerce", "commercial", "fonds de commerce", "registre"],
+        "societe": ["societe", "sarl", "sa", "suarl", "associe", "actionnaire", "gerant", "capital"],
+        "faillite": ["faillite", "liquidation", "redressement", "cessation", "paiement", "insolvable"],
+        "cheque": ["cheque", "lettre de change", "billet", "traite", "effet", "endossement"],
+        "bail_commercial": ["bail commercial", "fonds de commerce", "local commercial"],
+        "comptabilite": ["comptabilite", "comptable", "bilan", "livres", "registre"]
+      },
+      "boosts": [
+        {
+          "name": "company_creation",
+          "triggers": ["creation", "creer", "societe", "sarl", "constitution", "immatriculation"],
+          "law": "code_commercial",
+          "articles": ["2", "3", "4"]
+        }
+      ]
+    },
+    "travail": {
+      "corpus_label": "le Droit du Travail Tunisien",
+      "laws": [
+        "code_travail"
+      ],
+      "system_prompt": "You are a Tunisian labor law expert. Answer ONLY based on the provided Code du Travail. Use simple clear French. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {
+        "licenciement": ["licenciement", "licencie", "renvoye", "congedie", "rupture", "resiliation"],
+        "salaire": ["salaire", "remuneration", "paye", "paie", "smig", "smic"],
+        "conge": ["conge", "conges", "vacances", "repos", "maternite", "maladie", "annuel"],
+        "contrat_travail": ["contrat de travail", "cdd", "cdi", "embauche", "recrutement", "emploi"],
+        "heures": ["heures", "duree", "horaire", "temps de travail", "heures supplementaires", "overtime"],
+        "syndicat": ["syndicat", "syndical", "greve", "negociation", "convention collective"],
+        "accident": ["accident", "accident de travail", "maladie professionnelle", "securite"],
+        "employeur": ["employeur", "patron", "entreprise", "employé", "salarie", "travailleur", "ouvrier"]
+      },
+      "boosts": [
+        {
+          "name": "dismissal",
+          "triggers": ["licenciement", "licencie", "renvoye", "rupture", "abusif"],
+          "law": "code_travail",
+          "articles": ["14", "14 bis", "14 ter", "14 quater", "14 quinquies"]
+        },
+        {
+          "name": "leave",
+          "triggers": ["conge", "conges", "vacances", "maternite", "repos"],
+          "law": "code_travail",
+          "articles": ["112", "113", "114", "64"]
+        }
+      ]
+    },
+    "famille": {
+      "corpus_label": "le Droit de la Famille Tunisien",
+      "laws": [
+        "code_statut_personnel"
+      ],
+      "system_prompt": "You are a Tunisian family law expert. Answer ONLY based on the provided Code du Statut Personnel. Use simple clear French. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {
+        "mariage": ["mariage", "marier", "epoux", "epouse", "conjoint", "noce", "union"],
+        "divorce": ["divorce", "divorcer", "separation", "repudiation"],
+        "garde": ["garde", "enfant", "enfants", "hadana", "pension", "alimentaire", "nafaqa"],
+        "heritage": ["heritage", "heriter", "succession", "heritier", "partage", "legs", "testament"],
+        "filiation": ["filiation", "pere", "mere", "paternite", "maternite", "adoption"],
+        "tutelle": ["tutelle", "tuteur", "curatelle", "incapable"]
+      },
+      "boosts": [
+        {
+          "name": "marriage_conditions",
+          "triggers": ["mariage", "conditions", "marier", "age"],
+          "law": "code_statut_personnel",
+          "articles": ["3", "4", "5"]
+        },
+        {
+          "name": "divorce",
+          "triggers": ["divorce", "divorcer", "separation"],
+          "law": "code_statut_personnel",
+          "articles": ["29", "30", "31", "32"]
+        }
+      ]
+    },
+    "immobilier": {
+      "corpus_label": "le Droit Immobilier Tunisien",
+      "laws": [
+        "code_droits_reels"
+      ],
+      "system_prompt": "You are a Tunisian property law expert. Answer ONLY based on the provided Code des Droits Réels. Use simple clear French. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {
+        "propriete": ["propriete", "proprietaire", "bien", "immeuble", "immobilier", "terrain", "foncier"],
+        "copropriete": ["copropriete", "coproprietaire", "indivision", "indivisaire", "lot"],
+        "hypotheque": ["hypotheque", "inscription", "privilege", "surete", "gage"],
+        "servitude": ["servitude", "passage", "droit de passage", "mitoyennete"],
+        "usufruit": ["usufruit", "usufruitier", "nue-propriete", "jouissance"],
+        "titre_foncier": ["titre foncier", "immatriculation", "conservation", "cadastre"]
+      },
+      "boosts": [
+        {
+          "name": "property_rights",
+          "triggers": ["propriete", "proprietaire", "droits", "bien", "immeuble"],
+          "law": "code_droits_reels",
+          "articles": ["17", "18", "19"]
+        }
+      ]
+    },
+    "default": {
+      "corpus_label": "la législation tunisienne",
+      "laws": [],
+      "system_prompt": "You are a Tunisian legal assistant. Answer ONLY based on the provided legal articles. Use simple clear French, no legal jargon. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
+      "synonyms": {},
+      "boosts": []
+    }
+  }
+}

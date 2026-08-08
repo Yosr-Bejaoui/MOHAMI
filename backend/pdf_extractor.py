@@ -7,11 +7,11 @@ from pypdf import PdfReader
 
 ARTICLE_HEAD = r"(?:premier|1er|\d+(?:\s+(?:bis|ter|quater|quinquies|sexies))?)"
 ARTICLE_PATTERN = re.compile(
-    rf"^Article\s+{ARTICLE_HEAD}\b",
+    rf"^(?:Article|Art\.?)\s+{ARTICLE_HEAD}\b",
     re.IGNORECASE | re.MULTILINE,
 )
 INLINE_ARTICLE_PATTERN = re.compile(
-    rf"(?:^|\n)\s*(Article\s+{ARTICLE_HEAD})\s*",
+    rf"(?:^|\n)\s*((?:Article|Art\.?)\s+{ARTICLE_HEAD})\s*",
     re.IGNORECASE,
 )
 LIVRE_PATTERN = re.compile(r"^LIVRE\s+(.+)$", re.IGNORECASE | re.MULTILINE)
@@ -67,7 +67,7 @@ def _article_number(article_title: str) -> str:
 
 
 def _split_long_text(text: str, max_chars: int = MAX_CHUNK_CHARS) -> list[str]:
-    if len(text) <= max_chars:
+    if len(text) <= max_chars + 150:
         return [text]
 
     paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
@@ -81,19 +81,29 @@ def _split_long_text(text: str, max_chars: int = MAX_CHUNK_CHARS) -> list[str]:
         if len(candidate) <= max_chars:
             current = candidate
             continue
+        
         if current:
             chunks.append(current)
+            
         if len(paragraph) <= max_chars:
             current = paragraph
             continue
+            
         start = 0
         while start < len(paragraph):
-            chunks.append(paragraph[start : start + max_chars])
-            start += max_chars
+            end = start + max_chars
+            if len(paragraph) - end < 150:
+                end = len(paragraph)
+            chunks.append(paragraph[start : end])
+            start = end
         current = ""
 
     if current:
-        chunks.append(current)
+        if chunks and len(current) < 150:
+            chunks[-1] = f"{chunks[-1]}\n\n{current}"
+        else:
+            chunks.append(current)
+            
     return chunks
 
 
@@ -101,7 +111,7 @@ def _trim_to_code_body(text: str, start_marker: str = "LIVRE PREMIER", end_marke
     start = text.find(start_marker)
     if start == -1:
         # Fallback to the first article if the specific marker is not found
-        article_match = re.search(r"Article\s+(?:premier|1er|1\b)", text, re.IGNORECASE)
+        article_match = re.search(r"(?:Article|Art\.?)\s+(?:premier|1er|1\b)", text, re.IGNORECASE)
         if article_match:
             start = article_match.start()
         else:
@@ -250,13 +260,13 @@ def main() -> None:
     parser.add_argument(
         "--pdf",
         type=Path,
-        default=Path(__file__).resolve().parents[2] / "mohami_data" / "penal_code" / "Tunisia-Penal-Code-2012.pdf",
+        default=Path(__file__).resolve().parent.parent / "data" / "sources" / "penal_code" / "Tunisia-Penal-Code-2012.pdf",
         help="Path to the source PDF.",
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path(__file__).resolve().parents[2] / "code_penal.json",
+        default=Path(__file__).resolve().parent.parent / "data" / "generated" / "code_penal.json",
         help="Where to write the extracted JSON.",
     )
     parser.add_argument(

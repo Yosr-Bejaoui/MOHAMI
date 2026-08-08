@@ -18,10 +18,10 @@ from pathlib import Path
 
 import numpy as np
 
-PROJECT_ROOT = Path(__file__).resolve().parent
-DATA_PATH = PROJECT_ROOT / "corpus.json"
-EMBEDDINGS_CACHE = PROJECT_ROOT / "embeddings_cache.npz"
-DOMAIN_CONFIG_PATH = PROJECT_ROOT / "domain_config.json"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_PATH = PROJECT_ROOT / "data" / "generated" / "corpus.json"
+EMBEDDINGS_CACHE = PROJECT_ROOT / "data" / "generated" / "embeddings_cache.npz"
+DOMAIN_CONFIG_PATH = PROJECT_ROOT / "config" / "domain_config.json"
 EMBEDDING_MODELS = [
     "intfloat/multilingual-e5-base",
     "paraphrase-multilingual-MiniLM-L12-v2",
@@ -228,7 +228,7 @@ def save_embedding_cache(articles: list[dict], embeddings: list[list[float]], mo
 def load_embedding_cache() -> dict[str, np.ndarray]:
     if not is_index_ready():
         raise FileNotFoundError(
-            f"Embedding cache not found at {EMBEDDINGS_CACHE}. Run: python index_corpus.py --force"
+            f"Embedding cache not found at {EMBEDDINGS_CACHE}. Run: python scripts/index_corpus.py --force"
         )
     return np.load(EMBEDDINGS_CACHE, allow_pickle=True)
 
@@ -236,7 +236,7 @@ def load_embedding_cache() -> dict[str, np.ndarray]:
 def _cache_model_name(cache: dict[str, np.ndarray]) -> str:
     if "model_name" not in cache:
         raise RuntimeError(
-            "Embedding cache is missing model_name. Rebuild the index with: python index_corpus.py --force"
+            "Embedding cache is missing model_name. Rebuild the index with: python scripts/index_corpus.py --force"
         )
     return str(cache["model_name"]).strip()
 
@@ -262,7 +262,7 @@ def run_index_subprocess(force: bool = False) -> str:
     if is_index_ready() and not force:
         return f"Index already exists ({EMBEDDINGS_CACHE.name})."
 
-    command = [sys.executable, str(PROJECT_ROOT / "index_corpus.py")]
+    command = [sys.executable, str(PROJECT_ROOT / "scripts" / "index_corpus.py")]
     if force:
         command.append("--force")
 
@@ -307,7 +307,7 @@ def _start_encoder_process(timeout_seconds: int = ENCODER_STARTUP_TIMEOUT_SECOND
         return _ENCODER_PROCESS
 
     process = subprocess.Popen(
-        [sys.executable, str(PROJECT_ROOT / "encode_query_server.py")],
+        [sys.executable, str(PROJECT_ROOT / "backend" / "encode_query_server.py")],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -384,7 +384,7 @@ def _ensure_cache_encoder_consistency(cache: dict[str, np.ndarray]) -> None:
         raise RuntimeError(
             "Embedding cache/model mismatch: "
             f"cache uses '{cache_model_name}' but query encoder loaded '{encoder_model_name}'. "
-            "Run: python index_corpus.py --force"
+            "Run: python scripts/index_corpus.py --force"
         )
 
 
@@ -578,7 +578,7 @@ def retrieve(question: str, top_k: int = 3, domain: str = "default") -> list[dic
     if embeddings.ndim != 2 or query_vector.shape[0] != embeddings.shape[1]:
         raise RuntimeError(
             "Embedding dimension mismatch between cache and query encoder. "
-            "Run: python index_corpus.py --force"
+            "Run: python scripts/index_corpus.py --force"
         )
     semantic_scores = embeddings @ query_vector
     query_tokens = tokenize(question, expand=True)

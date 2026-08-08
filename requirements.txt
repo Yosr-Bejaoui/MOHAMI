@@ -1,0 +1,7 @@
+pypdf
+numpy
+sentence-transformers
+google-generativeai
+fastapi
+uvicorn
+pydantic
