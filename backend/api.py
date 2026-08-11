@@ -31,7 +31,8 @@ def health():
 
 @app.post("/api/ask")
 def ask(req: AskRequest):
-    answer_text, hits, domain = answer_question(req.question)
+    res = answer_question(req.question)
+    answer_text, hits, domain = res[0], res[1], res[2]
     
     sources = []
     for hit in hits:

@@ -39,10 +39,34 @@ def main() -> None:
     dataset_csv = data_dir / "tunisia_legal_dataset.csv"
     stats_json = data_dir / "dataset_stats.json"
 
+    import re
+    def _slugify(val):
+        return re.sub(r'[^a-z0-9]+', '_', str(val).lower()).strip('_')
+        
     corpus: list[dict] = []
+    short_articles_removed = 0
+    global_counter = 1
+
     for source_path in sources:
         with open(source_path, "r", encoding="utf-8") as file:
-            corpus.extend(json.load(file))
+            articles = json.load(file)
+            for article in articles:
+                text = article.get("text", "")
+                if len(text) < 15:
+                    short_articles_removed += 1
+                    continue
+                
+                meta = article.get("metadata", {})
+                law_code = meta.get("law", "unknown")
+                article_number = _slugify(meta.get("article_number", "0"))
+                chunk_index = meta.get("part", "0")
+                
+                article["id"] = f"{law_code}_{article_number}_{chunk_index}_{global_counter}"
+                global_counter += 1
+                
+                corpus.append(article)
+                
+    print(f"Removed {short_articles_removed} short articles (< 15 characters).")
 
     # Write merged JSON
     with open(corpus_path, "w", encoding="utf-8") as file:

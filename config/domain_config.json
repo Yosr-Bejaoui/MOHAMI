@@ -47,14 +47,15 @@
         "consentement": ["consentement", "acceptation", "accord", "volonte"],
         "capacite": ["capacite", "capable", "incapable", "mineur", "majeur", "interdit"],
         "vente": ["vente", "achat", "vendeur", "acheteur", "prix", "cession"],
-        "dommage": ["dommage", "prejudice", "indemnisation", "reparation", "faute", "responsabilite"],
+        "dommage": ["dommage", "dommages", "prejudice", "indemnisation", "reparation", "faute", "responsabilite"],
+        "inexecution": ["inexecution", "non respect", "respecte pas", "ne respecte pas", "rupture de contrat", "resolution", "resiliation", "execution forcee"],
         "louage": ["louage", "location", "loyer", "locataire", "bailleur", "bail"],
         "mandat": ["mandat", "mandataire", "mandant", "procuration", "representant"],
         "societe": ["societe", "associe", "associes", "sarl", "parts", "actions"],
         "garantie": ["garantie", "caution", "cautionnement", "hypotheque", "gage", "nantissement"],
         "prescription": ["prescription", "delai", "forclusion"],
-        "appel": ["appel", "pourvoi", "cassation", "recours", "jugement", "tribunal"],
-        "action": ["action en justice", "assignation", "plainte", "demande", "procedure"]
+        "appel": ["appel", "pourvoi", "cassation", "recours", "jugement", "tribunal", "saisir le tribunal"],
+        "action": ["action en justice", "assignation", "plainte", "demande", "procedure", "recours"]
       },
       "boosts": [
         {
@@ -80,6 +81,12 @@
           "triggers": ["vente", "achat", "vendeur", "acheteur"],
           "law": "code_coc",
           "articles": ["577", "580", "581"]
+        },
+        {
+          "name": "breach_of_contract",
+          "triggers": ["respecte pas", "ne respecte pas", "inexecution", "non respect", "rupture de contrat", "resolution", "execution forcee"],
+          "law": "code_coc",
+          "articles": ["274", "278", "279"]
         }
       ]
     },
@@ -114,14 +121,14 @@
       ],
       "system_prompt": "You are a Tunisian labor law expert. Answer ONLY based on the provided Code du Travail. Use simple clear French. Cite the article number in your answer. Always end with: \"⚠️ Cette réponse est informative uniquement.\nConsultez un avocat pour votre situation spécifique.\"",
       "synonyms": {
-        "licenciement": ["licenciement", "licencie", "renvoye", "congedie", "rupture", "resiliation"],
-        "salaire": ["salaire", "remuneration", "paye", "paie", "smig", "smic"],
+        "licenciement": ["licenciement", "licencie", "renvoye", "congedie", "rupture", "resiliation", "vire", "viré", "démission"],
+        "salaire": ["salaire", "remuneration", "paye", "paie", "smig", "smic", "indemnité"],
         "conge": ["conge", "conges", "vacances", "repos", "maternite", "maladie", "annuel"],
-        "contrat_travail": ["contrat de travail", "cdd", "cdi", "embauche", "recrutement", "emploi"],
+        "contrat_travail": ["contrat de travail", "cdd", "cdi", "embauche", "recrutement", "emploi", "boulot", "travail", "préavis"],
         "heures": ["heures", "duree", "horaire", "temps de travail", "heures supplementaires", "overtime"],
         "syndicat": ["syndicat", "syndical", "greve", "negociation", "convention collective"],
         "accident": ["accident", "accident de travail", "maladie professionnelle", "securite"],
-        "employeur": ["employeur", "patron", "entreprise", "employé", "salarie", "travailleur", "ouvrier"]
+        "employeur": ["employeur", "patron", "entreprise", "employé", "salarie", "travailleur", "ouvrier", "salarié"]
       },
       "boosts": [
         {

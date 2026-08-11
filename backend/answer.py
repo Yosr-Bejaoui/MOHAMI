@@ -5,6 +5,9 @@ from __future__ import annotations
 import os
 import sys
 
+from dotenv import load_dotenv
+load_dotenv()
+
 import google.generativeai as genai
 
 from .rag_utils import retrieve, get_system_prompt, _load_domain_config, is_gemini_available
@@ -78,21 +81,72 @@ def classify_domain(question: str) -> str:
             max_score = score
             best_domain = domain
 
-    return best_domain
+    confidence = min(max_score / 3.0, 1.0)
+    if max_score == 0:
+        confidence = 0.0
+    return best_domain, confidence
 
 
-def answer_question(question: str) -> tuple[str, list[dict], str]:
-    domain = classify_domain(question)
-    print(f"\n[Router] Detected Domain: {domain}")
+def rewrite_query(question: str, domain: str) -> str:
+    config = _load_domain_config()
+    domains = config.get("domains", {})
+    domain_config = domains.get(domain, domains.get("default", {}))
+    
+    synonyms_dict = domain_config.get("synonyms", {})
+    expanded_terms = set()
+    for key, terms in synonyms_dict.items():
+        expanded_terms.update(terms)
+        
+    if expanded_terms:
+        # Append unique synonyms to the question for semantic search enrichment
+        return question + " " + " ".join(expanded_terms)
+    
+    return question
 
-    hits = retrieve(question, top_k=5, domain=domain)
+def generate_hyde(rewritten_query: str) -> str:
+    _configure_genai()
+    model = genai.GenerativeModel(GEMINI_MODEL)
+    prompt = f"""Tu es un expert en droit tunisien.
+Écris un court extrait d'article de loi tunisien (2-3 phrases)
+qui répondrait directement à cette question :
+{rewritten_query}
+Réponds uniquement avec le texte de l'article hypothétique."""
+    try:
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(temperature=0.3)
+        )
+        return (response.text or "").strip()
+    except Exception:
+        return ""
+
+def answer_question(question: str) -> tuple[str, list[dict], str, str, str]:
+    domain, confidence = classify_domain(question)
+    print(f"\n[Router] Detected Domain: {domain} (Confidence: {confidence:.2f})")
+
+    rewritten_query = rewrite_query(question, domain)
+    print(f"Original: {question}")
+    print(f"Rewritten: {rewritten_query}")
+
+    hypothetical_article = ""
+    if confidence < 0.5:
+        print("[HyDE] Confidence below 0.5, generating hypothetical document...")
+        hypothetical_article = generate_hyde(rewritten_query)
+        combined = rewritten_query + " " + hypothetical_article
+    else:
+        print("[HyDE] High confidence, skipping HyDE to save API calls.")
+        combined = rewritten_query
+
+    hits = retrieve(combined, top_k=5, domain=domain)
     if not hits:
         return (
             "Je n'ai trouvé aucun article pertinent dans le corpus indexé.\n"
             "⚠️ Cette réponse est informative uniquement.\n"
             "Consultez un avocat pour votre situation spécifique.",
             [],
-            domain
+            domain,
+            rewritten_query,
+            hypothetical_article
         )
 
     context = build_context(hits)
@@ -100,9 +154,10 @@ def answer_question(question: str) -> tuple[str, list[dict], str]:
         f"Question: {question}\n\n"
         "Articles fournis:\n"
         f"{context}\n\n"
-        "Réponds uniquement avec les articles fournis. "
-        "Cite les articles numéros dans la réponse. "
-        "Si le texte ne suffit pas, dis-le clairement."
+        "Réponds uniquement avec les articles fournis.\n"
+        "Tu DOIS explicitement citer la loi et l'article pour chaque affirmation en utilisant EXACTEMENT le format: [Article X, Nom de la Loi].\n"
+        "Par exemple: [Article 2, Code des Obligations et des Contrats Tunisien].\n"
+        "Si le texte ne suffit pas pour répondre, dis-le clairement."
     )
 
     _configure_genai()
@@ -136,15 +191,19 @@ def answer_question(question: str) -> tuple[str, list[dict], str]:
             "⚠️ Cette réponse est informative uniquement.\n"
             "Consultez un avocat pour votre situation spécifique."
         ).strip()
-    return answer, hits, domain
+    return answer, hits, domain, rewritten_query, hypothetical_article
 
 
 def main() -> None:
     if len(sys.argv) < 2:
         raise SystemExit("Usage: python answer.py <question>")
 
+    # Ensure stdout can handle UTF-8 characters on Windows
+    if sys.stdout.encoding.lower() != 'utf-8':
+        sys.stdout.reconfigure(encoding='utf-8')
+
     question = " ".join(sys.argv[1:]).strip()
-    answer, _, _ = answer_question(question)
+    answer, _, _, _, _ = answer_question(question)
     print(answer)
 
 

@@ -4,6 +4,9 @@ import json
 import math
 import os
 import queue
+
+from dotenv import load_dotenv
+load_dotenv()
 import re
 import shutil
 import subprocess
@@ -711,7 +714,7 @@ def summarize_with_llm(question: str, hits: list[dict], domain: str = "default")
         metadata = hit["metadata"]
         context_blocks.append(
             f"- {metadata.get('article_title', 'Article')} "
-            f"(Livre {metadata.get('livre', '')}, chapitre {metadata.get('chapitre', '')})\n"
+            f"(Loi: {metadata.get('law', 'Inconnu')}, Livre {metadata.get('livre', '')}, chapitre {metadata.get('chapitre', '')})\n"
             f"{hit['text']}"
         )
 
@@ -722,7 +725,8 @@ def summarize_with_llm(question: str, hits: list[dict], domain: str = "default")
 
     user_prompt = (
         "Tu es un assistant juridique tunisien. Réponds en français clair et accessible.\n"
-        "Utilise UNIQUEMENT les articles fournis ci-dessous. Cite les numéros d'articles.\n"
+        "Utilise UNIQUEMENT les articles fournis ci-dessous.\n"
+        "Tu DOIS explicitement citer la loi et l'article pour chaque affirmation en utilisant EXACTEMENT le format: [Article X, Nom de la Loi].\n"
         "Si les textes ne suffisent pas, dis-le clairement.\n"
         "Rappelle que ce n'est pas un avis juridique officiel.\n\n"
         f"Question: {question}\n\n"
@@ -731,7 +735,7 @@ def summarize_with_llm(question: str, hits: list[dict], domain: str = "default")
         + "\n\nRéponse structurée:\n"
         "1) Ce que dit la loi\n"
         "2) Peines applicables (si mentionnées)\n"
-        "3) Articles cités\n"
+        "3) Articles cités (au format [Article X, Nom de la Loi])\n"
         "4) Mise en garde"
     )
 

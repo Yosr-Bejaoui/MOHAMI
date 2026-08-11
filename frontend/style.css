@@ -74,6 +74,13 @@ body {
     padding: 1.5rem;
     text-align: center;
     flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(26, 26, 25, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 h1 {
@@ -251,7 +258,10 @@ h1 {
     left: 0;
     right: 0;
     padding: 1rem 2rem 1.5rem;
-    background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+    background: rgba(26, 26, 25, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     z-index: 10;
 }
 
@@ -351,3 +361,38 @@ textarea::placeholder {
     0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
     40% { transform: scale(1); opacity: 1; }
 }
+
+/* Citation Badge */
+.citation-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba(217, 119, 87, 0.15); /* var(--primary) with opacity */
+    color: var(--primary);
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid rgba(217, 119, 87, 0.3);
+    margin: 0 0.2rem;
+}
+.citation-badge:hover {
+    background: rgba(217, 119, 87, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(217, 119, 87, 0.2);
+}
+
+/* Source Card Highlight Animation */
+@keyframes highlightFlash {
+    0% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.7); border-color: var(--primary); }
+    70% { box-shadow: 0 0 0 10px rgba(217, 119, 87, 0); border-color: var(--primary); }
+    100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0); border-color: var(--border-color); }
+}
+
+.source-card.highlighted {
+    animation: highlightFlash 1.5s ease-out;
+    border-color: var(--text-muted); /* fallback after animation */
+}
+

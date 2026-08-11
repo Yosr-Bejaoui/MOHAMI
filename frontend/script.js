@@ -30,9 +30,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    window.highlightSource = function(article, law) {
+        const sourceCards = document.querySelectorAll('.source-card');
+        let found = false;
+        
+        sourceCards.forEach(card => {
+            const articleText = card.querySelector('.source-article').textContent;
+            const artNum = articleText.replace(/Art\.?\s*/i, '').trim();
+            const searchedNum = article.replace(/Article\s*/i, '').trim();
+            
+            if (artNum.toLowerCase() === searchedNum.toLowerCase()) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.classList.remove('highlighted');
+                void card.offsetWidth; // Trigger reflow
+                card.classList.add('highlighted');
+                found = true;
+            }
+        });
+    };
+
     // Simple markdown to HTML parser for the answer text
     function parseMarkdown(text) {
         let html = text
+            .replace(/\[(Article\s+[^,\]]+),\s*([^\]]+)\]/gi, `<span class="citation-badge" onclick="highlightSource('$1', '$2')">📜 $1</span>`)
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/\n\n/g, '</p><p>')

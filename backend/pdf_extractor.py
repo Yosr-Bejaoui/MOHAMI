@@ -44,8 +44,22 @@ def clean_text(text: str) -> str:
         text,
         flags=re.IGNORECASE,
     )
+    text = re.sub(r"Impeimerie\s+Officielle", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"Imprimerie\s+Officielle", "", text, flags=re.IGNORECASE)
     text = re.sub(r"République\s+Tunisienne", "", text, flags=re.IGNORECASE)
-    text = re.sub(r"\n{3,}", "\n\n", text)
+    
+    lines = []
+    for line in text.split('\n'):
+        line_stripped = line.strip()
+        if line_stripped.isdigit():
+            continue
+        if len(line_stripped) > 0 and len(line_stripped) < 3:
+            continue
+        lines.append(line)
+        
+    text = '\n'.join(lines)
+    
+    text = re.sub(r"\n{2,}", "\n", text)
     text = re.sub(r"[ \t]+", " ", text)
     return text.strip()
 
